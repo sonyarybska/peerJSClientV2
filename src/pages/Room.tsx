@@ -6,11 +6,12 @@ import { Chat } from "../components/chat";
 import { PeerState } from "../reducers";
 import { ChatContext, RoomContext, UserContext } from "../context";
 import { ws } from "../ws";
+import { HandleCameraToggle } from "../components/HandleCameraToggleButton";
 
 export const Room = () => {
   const { id } = useParams();
   const [numberOfParticipants, setNumberOfParticipants] = useState(1);
-  const { stream, screenStream, peers, shareScreen, screenSharingId, setRoomId } =
+  const { stream, screenStream, peers, shareScreen, screenSharingId, setRoomId, handleCameraToggle } =
     useContext(RoomContext);
   const { userName, userId } = useContext(UserContext);
   const { toggleChat, chat } = useContext(ChatContext);
@@ -101,6 +102,7 @@ export const Room = () => {
           bgcolor: "#fff",
           borderTop: "2px solid #ddd",
         }}>
+          <HandleCameraToggle onClick={handleCameraToggle}/>
         <ShareScreenButton onClick={shareScreen} />
         <ChatButton onClick={toggleChat} />
         <CallEndButton />
