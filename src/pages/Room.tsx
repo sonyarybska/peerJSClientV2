@@ -1,8 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Button, Grid } from "@mui/material";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import NoPhotographyIcon from "@mui/icons-material/NoPhotography";
 import { CallEndButton, ChatButton, ShareScreenButton, VideoPlayer } from "../components";
 import { Chat } from "../components/chat";
 import { PeerState } from "../reducers";
@@ -12,7 +10,6 @@ import { ws } from "../ws";
 export const Room = () => {
   const { id } = useParams();
   const [numberOfParticipants, setNumberOfParticipants] = useState(1);
-  const [isCameraOn, setIsCameraOn] = useState(true);
   const { stream, screenStream, peers, shareScreen, screenSharingId, setRoomId } =
     useContext(RoomContext);
   const { userName, userId } = useContext(UserContext);
@@ -37,16 +34,6 @@ export const Room = () => {
       Object.values(peersToShow as PeerState).filter((peer) => !!peer.stream)?.length + 1
     );
   }, [peersToShow]);
-
-  function handleCameraToggle() {
-    if (stream) {
-      const tracks = stream.getTracks();
-      tracks.forEach((track) => {
-        track.enabled = !track.enabled;
-        setIsCameraOn(!track.enabled); // Оновлюємо стан камери
-      });
-    }
-  }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "90vh", gap: 2 }}>
@@ -114,13 +101,6 @@ export const Room = () => {
           bgcolor: "#fff",
           borderTop: "2px solid #ddd",
         }}>
-        <div onClick={handleCameraToggle}>
-          {isCameraOn ? (
-            <NoPhotographyIcon color="action" fontSize="large" />
-          ) : (
-            <CameraAltIcon color="action" fontSize="large" />
-          )}
-        </div>
         <ShareScreenButton onClick={shareScreen} />
         <ChatButton onClick={toggleChat} />
         <CallEndButton />
