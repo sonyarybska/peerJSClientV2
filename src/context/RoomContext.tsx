@@ -24,6 +24,7 @@ interface RoomValue {
   setRoomId: (id: string) => void;
   screenSharingId: string;
   handleCameraToggle:(setIsCameraOn:any) => void;
+  handleAudioToggle:(setIsAdioOn:any) => void;
 }
 
 interface Props {
@@ -36,7 +37,8 @@ export const RoomContext = createContext<RoomValue>({
   setRoomId: (id) => {},
   screenSharingId: "",
   roomId: "",
-  handleCameraToggle:(setIsCameraOn:any) => {}
+  handleCameraToggle:(setIsCameraOn:any) => {},
+  handleAudioToggle:(setIsAudioOn:any) => {}
 });
 
 if (!!window.Cypress) {
@@ -172,10 +174,20 @@ export const RoomProvider: React.FC<Props> = ({ children }) => {
 
   function handleCameraToggle(setIsCameraOn:any) {
     if (stream) {
-      const tracks = stream.getTracks();
+      const tracks = stream.getVideoTracks();
       tracks.forEach((track) => {
         track.enabled = !track.enabled;
         setIsCameraOn(!track.enabled);
+      });
+    }
+  }
+
+  function handleAudioToggle(setIsAudioOn:any) {
+    if (stream) {
+      const tracks = stream.getAudioTracks();
+      tracks.forEach((track) => {
+        track.enabled = !track.enabled;
+        setIsAudioOn(!track.enabled);
       });
     }
   }
@@ -191,6 +203,7 @@ export const RoomProvider: React.FC<Props> = ({ children }) => {
         setRoomId,
         screenSharingId,
         handleCameraToggle,
+        handleAudioToggle
       }}>
       {children}
     </RoomContext.Provider>
